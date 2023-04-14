@@ -30,6 +30,7 @@ def pregunta_01():
     214
 
     """
+    
     suma = 0
     for lista in datos:
         suma += int(lista[1])
@@ -38,6 +39,7 @@ def pregunta_01():
 
 
 def pregunta_02():
+
     """
     Retorne la cantidad de registros por cada letra de la primera columna como la lista
     de tuplas (letra, cantidad), ordendas alfabéticamente.
@@ -52,10 +54,15 @@ def pregunta_02():
     ]
 
     """
-    return
-
+        
+    columna = [fila[0] for fila in datos]
+    columna_no_duplicadas = sorted(set(columna))
+    lista_tupla =[(j, columna.count(j)) for j in columna_no_duplicadas]
+    return lista_tupla
+    
 
 def pregunta_03():
+    
     """
     Retorne la suma de la columna 2 por cada letra de la primera columna como una lista
     de tuplas (letra, suma) ordendas alfabeticamente.
@@ -70,7 +77,12 @@ def pregunta_03():
     ]
 
     """
-    return
+    datos_suma=[]
+    
+    for i, j in itertools.groupby(sorted(datos), lambda x : x[0]):
+        datos_suma.append((i, sum(int(x[1]) for x in j)))
+
+    return datos_suma
 
 
 def pregunta_04():
@@ -95,7 +107,15 @@ def pregunta_04():
     ]
 
     """
-    return
+    
+    data_by_month = Counter()
+
+    for row in datos:
+
+        date = datetime.strptime(row[2][:7], "%Y-%m")
+        data_by_month['{:02d}'.format(date.month)] += 1
+
+    return sorted(list(data_by_month.items()))
 
 
 def pregunta_05():
@@ -113,7 +133,14 @@ def pregunta_05():
     ]
 
     """
-    return
+    datos_suma = []
+
+    for i, j in itertools.groupby(sorted(datos), lambda x : x[0]):
+        valores_list = [x[1] for x in j]
+        datos_suma.append((i, int(max(valores_list)), int(min(valores_list))))
+
+    return datos_suma
+
 
 
 def pregunta_06():
@@ -138,7 +165,20 @@ def pregunta_06():
     ]
 
     """
-    return
+    nueva_lista_valores = []
+    datos_dic = []
+    valores = [x[4] for x in datos]
+    lista_valores = [x.split(",") for x in valores]
+
+    for x in lista_valores:
+        for y in x:
+            nueva_lista_valores.append(y.split(":"))
+
+    for i, j in itertools.groupby(sorted(nueva_lista_valores), lambda x : x[0]):
+            valores_list = [int(x[1]) for x in j]
+            datos_dic.append((i, min(valores_list), max(valores_list)))
+
+    return datos_dic
 
 
 def pregunta_07():
@@ -162,7 +202,13 @@ def pregunta_07():
     ]
 
     """
-    return
+    columnas = [x[:2] for x in datos]
+    new_group = []
+
+    for i, j in itertools.groupby(sorted(columnas, key = lambda x: x[1]), lambda x: x[1]):
+        new_group.append((int(i), [x[0] for x in j]))
+
+    return new_group
 
 
 def pregunta_08():
@@ -187,7 +233,13 @@ def pregunta_08():
     ]
 
     """
-    return
+    columnas = [x[:2] for x in datos]
+    new_group = []
+
+    for i, j in itertools.groupby(sorted(columnas, key = lambda x: x[1]), lambda x: x[1]):
+        new_group.append((int(i), sorted(list(set([x[0] for x in j])))))
+
+    return new_group
 
 
 def pregunta_09():
@@ -210,7 +262,20 @@ def pregunta_09():
     }
 
     """
-    return
+    nueva_lista_valores = []
+    valores = [x[4] for x in datos]
+    lista_valores = [x.split(",") for x in valores]
+    contador = Counter()
+
+    for x in lista_valores:
+        for y in x:
+            nueva_lista_valores.append(y.split(":"))
+
+    for dicc in nueva_lista_valores:
+        contador[dicc[0]] += 1
+
+    return dict(sorted(contador.items()))
+
 
 
 def pregunta_10():
@@ -231,7 +296,15 @@ def pregunta_10():
 
 
     """
-    return
+    columnas = [itemgetter(0,3,4)(i) for i in datos]
+    conteo = []
+    for x in columnas:
+
+        col4 = len(x[1].split(","))
+        col5 = len(x[2].split(","))
+        conteo.append((x[0],col4,col5))
+
+    return conteo
 
 
 def pregunta_11():
@@ -252,7 +325,23 @@ def pregunta_11():
 
 
     """
-    return
+    
+    col1 = [itemgetter(1)(i) for i in datos]
+    col3 = [i[3].split(",") for i in datos]
+
+    new_ = zip(col1,col3)
+    new_1 = []
+    new_group = []
+
+    for x in list(new_):
+        for y in x[1]:
+            new_1.append((x[0],y))
+
+    for i, j in itertools.groupby(sorted(new_1, key = lambda x: x[1]), lambda x: x[1]):
+        new_group.append((i, sum([int(y[0]) for y in j])))
+
+    return dict(new_group)
+
 
 
 def pregunta_12():
@@ -270,4 +359,22 @@ def pregunta_12():
     }
 
     """
-    return
+    
+    col0 = [itemgetter(0)(i) for i in datos]
+    col4 = [i[4].split(",") for i in datos]
+
+    valores = []
+    a = 0
+    for x in col4:
+        for y in x:
+            a += (int(y[y.index(":")+1:]))
+        valores.append(a)
+        a = 0
+
+    new_ = zip(col0,valores)
+    new_group = []
+
+    for i, j in itertools.groupby(sorted(list(new_), key = lambda x: x[0]), lambda x: x[0]):
+        new_group.append((i, sum(y[1] for y in j)))
+
+    return dict(new_group)
