@@ -12,6 +12,15 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 """
 
+import itertools
+from collections import Counter
+from datetime import datetime
+from operator import itemgetter
+
+with open ("data.csv", "r") as file:
+        datos = file.readlines()
+datos = [line.replace('\t','|').replace('\n','') for line in datos]
+datos = [line.split('|') for line in datos]
 
 def pregunta_01():
     """
@@ -21,7 +30,11 @@ def pregunta_01():
     214
 
     """
-    return
+    suma = 0
+    for lista in datos:
+        suma += int(lista[1])
+    
+    return suma
 
 
 def pregunta_02():
